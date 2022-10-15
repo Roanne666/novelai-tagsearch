@@ -28,4 +28,6 @@ Q:为什么有些网站的图打不开？
 A:目前国外只适配了pixiv，国内尚未做适配  
   
 Q:没有vpn怎么办？  
-A:链接: <https://pan.baidu.com/s/1rOSkTUYsmE1P0hw2A1NyPA> 提取码: mvqt，下载后解压到根目录
+A:<https://mega.nz/file/HlhjyBgZ#rIhkX8CDPvPwLkn8v6Tc_ai_m3KdluOM8L3OCEemn7o>  
+上面是Megasync云盘的链接，官网无法直接访问，但是可以直连客户端  
+压缩包下载后解压到根目录即可
