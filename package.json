@@ -13,7 +13,6 @@
     "element-ui": "^2.15.10",
     "eslint-plugin-vue": "^9.6.0",
     "request": "^2.88.2",
-    "util": "^0.12.4",
     "vue": "2.7.13 --save"
   },
   "devDependencies": {

@@ -1,4 +1,3 @@
-const util = require("util");
 const config = require("../config.json");
 
 const SITES = [
@@ -21,7 +20,7 @@ const PROXY = getProxy();
 function getProxy() {
   let proxy;
   if (config.use_proxy) {
-    proxy = util.format(config.proxy_scheme + "://%s:%d", config.proxy_ip, config.proxy_port);
+    proxy = `${config.proxy_scheme}://${config.proxy_ip}:${config.proxy_port}`;
   }
   return proxy;
 }
