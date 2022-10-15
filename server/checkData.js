@@ -6,12 +6,12 @@ let allKeywordsArray = getAllKeywordsArray();
 
 async function checkData(index = 0) {
   if (index >= imagesJson.length) {
-    return console.log("图片下载完成");
+    return console.log("**资源下载完成，可以顺利打开网页**");
   }
   let imageData = imagesJson[index];
   if (imageData.imageUrl.includes("yuque")) return checkData(index + 1);
   let { options, imageType } = utils.getOptions(imageData.imageUrl);
-  if (options.headers.referer) {
+  if (options.proxy && options.headers.referer) {
     try {
       let splitArray = imageData.imageUrl.split("/");
       let lastString = splitArray[splitArray.length - 1];
