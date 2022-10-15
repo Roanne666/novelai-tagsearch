@@ -14,7 +14,7 @@ npm start
 
 ## 如何获取pixiv上的图片(本项目包含)
 1. 打开config.json
-2. 将user_proxy改为true，
+2. 将use_proxy改为true，
 3. 在vpn设置中查看HTTP代理端口，将proxy_port改为相对应的端口
 
 ## FAQ
