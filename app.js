@@ -1,5 +1,5 @@
 const express = require("express");
-const { checkData, imagesJson, allKeywordsArray } = require("./server/checkData");
+const { checkData, imagesData, allKeywordsArray } = require("./server/checkData");
 
 checkData();
 
@@ -14,13 +14,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/imagesData", (req, res) => {
-  res.send(imagesJson);
+  res.send(imagesData);
 });
 
 app.get("/allKeywords", (req, res) => {
   res.send(allKeywordsArray);
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+app.listen(port);
