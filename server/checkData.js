@@ -4,6 +4,13 @@ const utils = require("./utils");
 let imagesJson = require("../data/AIImages.json");
 let imagesData = [];
 let allKeywordsArray = getAllKeywordsArray();
+checkDir();
+
+function checkDir() {
+  if (!fs.existsSync("./images")) {
+    fs.mkdirSync("./images");
+  }
+}
 
 async function checkData(index = 0) {
   if (index >= imagesJson.length) {
