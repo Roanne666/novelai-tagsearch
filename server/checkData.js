@@ -4,6 +4,8 @@ const path = require("path");
 const utils = require("./utils");
 
 const TRANSIMAGES_PATH = path.resolve(__dirname, "../src/assets/transImages.json");
+const IMAGE_DIR = path.resolve(__dirname, "../public/images");
+
 let imagesJson = require("../data/AIImages.json");
 let imagesData = [];
 let allKeywordsArray = getAllKeywordsArray();
@@ -11,8 +13,8 @@ let allKeywordsArray = getAllKeywordsArray();
 checkDir();
 
 function checkDir() {
-  if (!fs.existsSync("./images")) {
-    fs.mkdirSync("./images");
+  if (!fs.existsSync(IMAGE_DIR)) {
+    fs.mkdirSync(IMAGE_DIR);
   }
 }
 
@@ -32,8 +34,8 @@ async function checkData(index = 0) {
     lastString = lastString.split(".png")[0];
     console.log("正在检查:", lastString);
     lastString = encodeURI(lastString);
-    let imagePath = `./images/${lastString}.${imageType}`;
-    imageData.imageUrl = `/${lastString}.${imageType}`;
+    let imagePath = path.resolve(IMAGE_DIR, `./${lastString}.${imageType}`);
+    imageData.imageUrl = `./images/${lastString}.${imageType}`;
     if (fs.existsSync(imagePath)) {
       imagesData.push(imageData);
       return checkData(index + 1);

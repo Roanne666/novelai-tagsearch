@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import transImagesData from "./assets/transImages.json";
 import ImagePreview from "./components/ImagePreview.vue";
 import PopOver from "./components/PopOver.vue";
 import SearchInput from "./components/SearchInput.vue";
@@ -34,15 +35,11 @@ export default {
   components: { ImagePreview, PopOver, SearchInput },
   data() {
     return {
-      images: [],
-      imagesCache: [],
+      images: transImagesData,
+      imagesCache: transImagesData,
       allKeywordsArray: [],
       errorUrls: [],
     };
-  },
-  mounted() {
-    this.getAllKeywords();
-    this.getImageData();
   },
   computed: {
     isError() {
@@ -51,27 +48,21 @@ export default {
       };
     },
   },
+  mounted() {
+    this.allKeywordsArray = this.getAllKeywordsArray();
+  },
   methods: {
-    getAllKeywords() {
-      fetch("/allKeywords")
-        .then((res) => res.json())
-        .then((data) => {
-          for (let keyword of data) {
-            this.allKeywordsArray.push({ value: keyword });
+    getAllKeywordsArray() {
+      let data = [];
+      for (let imageData of transImagesData) {
+        for (let keyword of imageData.keywordsArray) {
+          let lowerKeyword = keyword.toLowerCase();
+          if (!data.includes(lowerKeyword)) {
+            data.push({ value: lowerKeyword });
           }
-        });
-    },
-    getImageData() {
-      fetch("/imagesData")
-        .then((res) => res.json())
-        .then((data) => {
-          for (let imageData of data) {
-            if (!imageData.imageUrl.includes("yuque")) {
-              this.images.push(imageData);
-            }
-          }
-          this.imagesCache = this.images;
-        });
+        }
+      }
+      return data;
     },
     getKeywordsString(image) {
       return image.keywordsArray.join(",");
