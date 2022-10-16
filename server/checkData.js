@@ -1,9 +1,13 @@
 let request = require("request");
 let fs = require("fs");
+const path = require("path");
 const utils = require("./utils");
+
+const TRANSIMAGES_PATH = path.resolve(__dirname, "../src/assets/transImages.json");
 let imagesJson = require("../data/AIImages.json");
 let imagesData = [];
 let allKeywordsArray = getAllKeywordsArray();
+
 checkDir();
 
 function checkDir() {
@@ -14,6 +18,7 @@ function checkDir() {
 
 async function checkData(index = 0) {
   if (index >= imagesJson.length) {
+    fs.writeFileSync(TRANSIMAGES_PATH, JSON.stringify(imagesData));
     return console.log("**资源下载完成，可以顺利打开网页**");
   }
   let imageData = imagesJson[index];
@@ -27,27 +32,24 @@ async function checkData(index = 0) {
     lastString = lastString.split(".png")[0];
     console.log("正在检查:", lastString);
     lastString = encodeURI(lastString);
-    path = `./images/${lastString}.${imageType}`;
+    let imagePath = `./images/${lastString}.${imageType}`;
     imageData.imageUrl = `/${lastString}.${imageType}`;
-    if (!fs.existsSync(path)) {
-      if (options.proxy) {
-        let status = await downImg(options, path);
-        if (status) {
-          return setTimeout(async () => {
-            checkData(index + 1);
-          }, Math.random() * 2000 + 1000);
-        }
-      } else {
-        return checkData(index + 1);
-      }
-    } else {
+    if (fs.existsSync(imagePath)) {
       imagesData.push(imageData);
       return checkData(index + 1);
     }
-  } else {
-    imagesData.push(imageData);
-    return checkData(index + 1);
+
+    if (!options.proxy) return checkData(index + 1);
+
+    let status = await downImg(options, imagePath);
+    if (!status) return checkData(index + 1);
+
+    return setTimeout(async () => {
+      checkData(index + 1);
+    }, Math.random() * 2000 + 1000);
   }
+  imagesData.push(imageData);
+  return checkData(index + 1);
 }
 
 function downImg(options, path) {
