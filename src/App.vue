@@ -4,10 +4,12 @@
       id="enter-admin"
       class="flex justify-space-between mb-4 flex-wrap gap-4"
     >
-      <el-button id="admin-button" @click="isAdmin = !isAdmin">后台</el-button>
+      <el-button id="admin-button" @click="adminButtonClick">{{
+        adminButton.text
+      }}</el-button>
     </div>
-    <PictureCollect v-show="isAdmin"></PictureCollect>
-    <div v-show="!isAdmin">
+    <PictureCollect v-show="adminButton.isAdmin"></PictureCollect>
+    <div v-show="!adminButton.isAdmin">
       <search-input
         @searchImage="searchImage"
         :allKeywordsArray="allKeywordsArray"
@@ -44,7 +46,10 @@ export default {
   components: { ImagePreview, PopOver, SearchInput, PictureCollect },
   data() {
     return {
-      isAdmin: false,
+      adminButton: {
+        isAdmin: false,
+        text: "后台",
+      },
       images: [],
       imagesCache: [],
       allKeywordsArray: [],
@@ -63,6 +68,15 @@ export default {
     },
   },
   methods: {
+    adminButtonClick() {
+      this.adminButton.isAdmin = !this.adminButton.isAdmin;
+      if (this.adminButton.isAdmin === true) {
+        this.adminButton.text = "前台";
+      } else {
+        this.getImageData();
+        this.adminButton.text = "后台";
+      }
+    },
     getAllKeywords() {
       fetch("/allKeywords")
         .then((res) => res.json())
