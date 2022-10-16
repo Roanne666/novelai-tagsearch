@@ -78,7 +78,7 @@ export default {
           imageUrlsArray.push(imageUrl);
         }
       }
-      fetch({
+      this.$axios({
         method: "POST",
         url: "/novelAI/addImages",
         data: { keywordsArray, negativeKeywordsArray, imageUrlsArray },
