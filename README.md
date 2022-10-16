@@ -1,9 +1,11 @@
-# novelai-tagserach(离线版)
+# novelai-tagserach
 
-## 不懂程序，只想看项目成果
-将版本切换到offline版本即可
+## 离线版使用说明
+1. 下载项目，将后缀改为.zip并解压
+链接: <https://pan.baidu.com/s/1Zyfz2zZXFdriBDa6ynkwFA> 提取码: afbe
+2. 打开目录中的index.html即可正常使用
 
-## 使用说明
+## 项目使用说明
 1. 安装node.js
 2. 下载项目并解压
 3. 在终端(项目根目录中)输入以下代码
@@ -22,7 +24,7 @@ npm start
 
 ## FAQ
 Q:可以自行添加图片吗？  
-A:在data/AIImage.json中可以直接添加图片数据，后续会做一个页面直接添加数据  
+A:可以开启本地服务器后使用后台添加图片，离线版不能添加图片  
   
 Q:为什么有些网站的图打不开？  
 A:目前国外只适配了pixiv和推特，国内尚未做适配  
