@@ -3,6 +3,8 @@ node_modules
 /dist
 images
 transImages.json
+*.jpg
+*.zip
 
 # local env files
 .env.local
