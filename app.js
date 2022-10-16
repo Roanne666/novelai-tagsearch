@@ -1,10 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const jsonParser = bodyParser.json();
-const { checkData, imagesData, allKeywordsArray } = require("./server/checkData");
+const path = require("path");
+let imagesJson = require(path.resolve(__dirname, "./data/AIImages.json"));
 const AIImage = require("./server/AIImage");
+let { checkData, imagesData, getAllKeywordsArray } = require("./server/checkData");
 
-checkData();
+checkData(imagesJson);
 
 const app = express();
 const port = 3000;
@@ -21,12 +23,13 @@ app.get("/imagesData", (req, res) => {
 });
 
 app.get("/allKeywords", (req, res) => {
-  res.send(allKeywordsArray);
+  res.send(getAllKeywordsArray(imagesJson));
 });
 
 app.post("/novelAI/addImages", jsonParser, (req, res) => {
-  let images = AIImage.addImages(req.body);
-  res.send(images);
+  let newImages = AIImage.addImages(req.body);
+  checkData(newImages);
+  res.send(true);
 });
 
 app.listen(port);

@@ -70,13 +70,15 @@ module.exports = {
     return AIImage.images;
   },
   addImages(data) {
+    let newImages = [];
     for (let imageUrl of data.imageUrlsArray) {
       if (!AIImage.imageExist(imageUrl)) {
-        let image = new AIImage(data.keywordsArray, data.negativeKeywordsArray, imageUrl);
-        AIImage.addImage(image);
+        let newImage = new AIImage(data.keywordsArray, data.negativeKeywordsArray, imageUrl);
+        newImages.push(newImage);
+        AIImage.addImage(newImage);
         console.log(`成功添加图片，链接为${imageUrl}`);
       }
     }
-    return AIImage.images;
+    return newImages;
   },
 };
