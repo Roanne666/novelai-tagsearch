@@ -36,8 +36,8 @@
 </template>
 
 <script>
-import PictureCollect from "./components/PictureCollect.vue";
 import transImagesData from "./assets/transImages.json";
+import PictureCollect from "./components/PictureCollect.vue";
 import ImagePreview from "./components/ImagePreview.vue";
 import PopOver from "./components/PopOver.vue";
 import SearchInput from "./components/SearchInput.vue";
