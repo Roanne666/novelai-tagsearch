@@ -1,5 +1,8 @@
 # novelai-tagserach
 
+## 不懂程序，只想看项目成果
+将版本切换到offline版本即可
+
 ## 使用说明
 1. 安装node.js
 2. 下载项目并解压
@@ -26,8 +29,3 @@ A:在data/AIImage.json中可以直接添加图片数据，后续会做一个页�
   
 Q:为什么有些网站的图打不开？  
 A:目前国外只适配了pixiv，国内尚未做适配  
-  
-Q:没有vpn怎么办？  
-A:<https://mega.nz/file/HlhjyBgZ#rIhkX8CDPvPwLkn8v6Tc_ai_m3KdluOM8L3OCEemn7o>  
-上面是Megasync云盘的链接，官网无法直接访问，但是可以直连客户端  
-压缩包下载后解压到根目录即可
