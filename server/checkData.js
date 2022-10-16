@@ -3,7 +3,6 @@ let fs = require("fs");
 const path = require("path");
 const utils = require("./utils");
 
-const TRANSIMAGES_PATH = path.resolve(__dirname, "../src/assets/transImages.json");
 let imagesJson = require("../data/AIImages.json");
 let imagesData = [];
 let allKeywordsArray = getAllKeywordsArray();
@@ -18,7 +17,6 @@ function checkDir() {
 
 async function checkData(index = 0) {
   if (index >= imagesJson.length) {
-    fs.writeFileSync(TRANSIMAGES_PATH, JSON.stringify(imagesData));
     return console.log("**资源下载完成，可以顺利打开网页**");
   }
   let imageData = imagesJson[index];
