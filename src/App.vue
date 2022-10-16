@@ -1,39 +1,50 @@
 <template>
   <div id="app">
-    <search-input
-      @searchImage="searchImage"
-      :allKeywordsArray="allKeywordsArray"
-    ></search-input>
-    <div id="images-wrapper" class="demo-image__preview">
-      <el-row :gutter="12">
-        <el-col :span="8" v-for="image in images" :key="image.imageUrl">
-          <el-card :body-style="{ padding: '0px' }" v-if="!isError(image)">
-            <ImagePreview
-              @loadingError="loadingError"
-              :imagesUrlArray="getImagesUrlArray()"
-              :image="image"
-            />
-            <PopOver
-              :keywords="getKeywordsString(image)"
-              :negative-keywords="getNegativeKeywordsString(image)"
-            ></PopOver>
-          </el-card>
-        </el-col>
-      </el-row>
+    <div
+      id="enter-admin"
+      class="flex justify-space-between mb-4 flex-wrap gap-4"
+    >
+      <el-button id="admin-button" @click="isAdmin = !isAdmin">后台</el-button>
+    </div>
+    <PictureCollect v-show="isAdmin"></PictureCollect>
+    <div v-show="!isAdmin">
+      <search-input
+        @searchImage="searchImage"
+        :allKeywordsArray="allKeywordsArray"
+      ></search-input>
+      <div id="images-wrapper" class="demo-image__preview">
+        <el-row :gutter="12">
+          <el-col :span="8" v-for="image in images" :key="image.imageUrl">
+            <el-card :body-style="{ padding: '0px' }" v-show="!isError(image)">
+              <ImagePreview
+                @loadingError="loadingError"
+                :imagesUrlArray="getImagesUrlArray()"
+                :image="image"
+              />
+              <PopOver
+                :keywords="getKeywordsString(image)"
+                :negative-keywords="getNegativeKeywordsString(image)"
+              ></PopOver>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import PictureCollect from "./components/PictureCollect.vue";
 import ImagePreview from "./components/ImagePreview.vue";
 import PopOver from "./components/PopOver.vue";
 import SearchInput from "./components/SearchInput.vue";
 
 export default {
   name: "App",
-  components: { ImagePreview, PopOver, SearchInput },
+  components: { ImagePreview, PopOver, SearchInput, PictureCollect },
   data() {
     return {
+      isAdmin: false,
       images: [],
       imagesCache: [],
       allKeywordsArray: [],
@@ -117,6 +128,13 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+#enter-admin {
+  position: fixed;
+  top: 11px;
+  right: 10px;
+  z-index: 9999;
 }
 
 #images-wrapper {

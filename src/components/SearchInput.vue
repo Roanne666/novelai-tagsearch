@@ -70,7 +70,7 @@ export default {
 <style>
 #input-row {
   position: fixed;
-  z-index: 99999;
+  z-index: 999;
   text-align: center;
   background-color: white;
   border-bottom: 1px solid gainsboro;

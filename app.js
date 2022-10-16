@@ -1,5 +1,8 @@
 const express = require("express");
+const bodyParser = require("body-parser");
+const jsonParser = bodyParser.json();
 const { checkData, imagesData, allKeywordsArray } = require("./server/checkData");
+const AIImage = require("./server/AIImage");
 
 checkData();
 
@@ -19,6 +22,11 @@ app.get("/imagesData", (req, res) => {
 
 app.get("/allKeywords", (req, res) => {
   res.send(allKeywordsArray);
+});
+
+app.post("/novelAI/addImages", jsonParser, (req, res) => {
+  let images = AIImage.addImages(req.body);
+  res.send(images);
 });
 
 app.listen(port);
