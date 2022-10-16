@@ -1,4 +1,4 @@
-# novelai-tagserach
+# novelai-tagserach(离线版)
 
 ## 不懂程序，只想看项目成果
 将版本切换到offline版本即可
@@ -21,9 +21,6 @@ npm start
 3. 在vpn设置中查看HTTP代理端口，将proxy_port改为相对应的端口
 
 ## FAQ
-Q:怎么安装node.js/输入代码等问题  
-A:<https://www.baidu.com>  
-  
 Q:可以自行添加图片吗？  
 A:在data/AIImage.json中可以直接添加图片数据，后续会做一个页面直接添加数据  
   
