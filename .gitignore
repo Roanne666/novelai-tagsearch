@@ -2,9 +2,9 @@
 node_modules
 /dist
 images
-dist.zip
-images.zip
 transImages.json
+*.zip
+*.jpg
 
 # local env files
 .env.local
