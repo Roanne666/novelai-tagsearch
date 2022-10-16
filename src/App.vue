@@ -148,7 +148,7 @@ export default {
   position: fixed;
   top: 11px;
   right: 10px;
-  z-index: 9999;
+  z-index: 1000;
 }
 
 #images-wrapper {

@@ -8,8 +8,9 @@ let imagesData = [];
 checkDir();
 
 function checkDir() {
-  if (!fs.existsSync("./images")) {
-    fs.mkdirSync("./images");
+  let imageDirPath = path.resolve(__dirname, "../public/images");
+  if (!fs.existsSync(imageDirPath)) {
+    fs.mkdirSync(imageDirPath);
   }
 }
 
@@ -31,8 +32,8 @@ async function checkData(imagesJson = [], index = 0) {
     // 推特链接需要把「?」之后的字符串去掉，不然网页访问不了图片
     lastString = lastString.split(".jpg")[0].split(".png")[0].split("?")[0];
     console.log("正在检查:", lastString);
-    let imagePath = path.resolve(__dirname, `../images/${lastString}.${imageType}`);
-    imageData.imageUrl = `/${lastString}.${imageType}`;
+    let imagePath = path.resolve(__dirname, `../public/images/${lastString}.${imageType}`);
+    imageData.imageUrl = `./images/${lastString}.${imageType}`;
     if (fs.existsSync(imagePath)) {
       imagesData.push(imageData);
       return checkData(imagesJson, index + 1);

@@ -12,7 +12,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.static("dist"));
-app.use(express.static("images"));
+app.use(express.static("/public/images"));
 
 app.get("/", (req, res) => {
   res.send("index.html");

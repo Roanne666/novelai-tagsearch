@@ -4,15 +4,15 @@ const AIIMAGE_PATH = path.resolve(__dirname, "../data/AIImages.json");
 
 class AIImage {
   constructor(keywordsArray, negativeKeywordsArray, imageUrl) {
-    this.keywordsArray = keywordsArray;
-    this.negativeKeywordsArray = negativeKeywordsArray;
+    this.keywordsArray = JSON.parse(JSON.stringify(keywordsArray));
+    this.negativeKeywordsArray = JSON.parse(JSON.stringify(negativeKeywordsArray));
     this.imageUrl = imageUrl;
   }
 
   static images = [];
 
   static addImage(image) {
-    this.images.push(image);
+    this.images.push(JSON.parse(JSON.stringify(image)));
     fs.writeFileSync(AIIMAGE_PATH, JSON.stringify(this.images));
     return true;
   }
@@ -74,8 +74,9 @@ module.exports = {
     for (let imageUrl of data.imageUrlsArray) {
       if (!AIImage.imageExist(imageUrl)) {
         let newImage = new AIImage(data.keywordsArray, data.negativeKeywordsArray, imageUrl);
-        newImages.push(newImage);
         AIImage.addImage(newImage);
+
+        newImages.push(newImage);
         console.log(`成功添加图片，链接为${imageUrl}`);
       }
     }
