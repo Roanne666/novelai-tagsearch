@@ -17,6 +17,7 @@ function checkDir() {
 
 async function checkData(index = 0) {
   if (index >= imagesJson.length) {
+    console.log(`图片总数据量${imagesJson.length}，可用数据量${imagesData.length}`);
     return console.log("**资源下载完成，可以顺利打开网页**");
   }
   let imageData = imagesJson[index];

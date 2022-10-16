@@ -8,10 +8,10 @@ const SITES = [
     imageType: "jpg",
   },
   {
-    needProxy: false,
-    include: "yuque",
-    referer: "https://cdn.nlark.com/",
-    imageType: "png",
+    needProxy: true,
+    include: "twimg",
+    referer: "https://twitter.com/",
+    imageType: "jpg",
   },
 ];
 
