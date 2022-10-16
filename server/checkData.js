@@ -16,6 +16,7 @@ function checkDir() {
 
 async function checkData(imagesJson = [], index = 0) {
   if (index >= imagesJson.length) {
+    fs.writeFileSync(path.resolve(__dirname, "../src/assets/transImages.json"), JSON.stringify(imagesData));
     return console.log(`**图片下载完成,图片总数据量${imagesJson.length},可用数据量${imagesData.length}**`);
   }
 
