@@ -30,10 +30,8 @@ async function checkData(index = 0) {
   if (options.headers.referer) {
     let splitArray = imageData.imageUrl.split("/");
     let lastString = splitArray[splitArray.length - 1];
-    lastString = lastString.split(".jpg")[0];
-    lastString = lastString.split(".png")[0];
+    lastString = lastString.split(".jpg")[0].split(".png")[0].split("?")[0];
     console.log("正在检查:", lastString);
-    lastString = encodeURI(lastString);
     let imagePath = path.resolve(IMAGE_DIR, `./${lastString}.${imageType}`);
     imageData.imageUrl = `./images/${lastString}.${imageType}`;
     if (fs.existsSync(imagePath)) {

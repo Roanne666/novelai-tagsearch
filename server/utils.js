@@ -5,13 +5,11 @@ const SITES = [
     needProxy: true,
     include: "pximg",
     referer: "https://www.pixiv.net",
-    imageType: "jpg",
   },
   {
-    needProxy: false,
-    include: "yuque",
-    referer: "https://cdn.nlark.com/",
-    imageType: "png",
+    needProxy: true,
+    include: "twimg",
+    referer: "https://www.twitter.com/",
   },
 ];
 
@@ -26,11 +24,10 @@ function getProxy() {
 }
 
 function getOptions(url) {
-  let referer, proxy, imageType;
+  let referer, proxy;
   for (let SITE of SITES) {
     if (url.includes(SITE.include)) {
       referer = SITE.referer;
-      imageType = SITE.imageType;
       if (SITE.needProxy) {
         proxy = PROXY;
       }
@@ -44,7 +41,7 @@ function getOptions(url) {
     },
     proxy,
   };
-  return { options, imageType };
+  return { options, imageType: "jpg" };
 }
 
 module.exports = { getOptions };
