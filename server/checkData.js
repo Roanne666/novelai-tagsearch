@@ -3,7 +3,7 @@ let fs = require("fs");
 const path = require("path");
 const utils = require("./utils");
 
-let imagesJson = require("../data/AIImages.json");
+let imagesJson = require(path.resolve(__dirname, "../data/AIImages.json"));
 let imagesData = [];
 let allKeywordsArray = getAllKeywordsArray();
 
@@ -20,18 +20,22 @@ async function checkData(index = 0) {
     console.log(`图片总数据量${imagesJson.length}，可用数据量${imagesData.length}`);
     return console.log("**资源下载完成，可以顺利打开网页**");
   }
+
   let imageData = imagesJson[index];
 
+  // 屏蔽语雀链接(暂未解决)
   if (imageData.imageUrl.includes("yuque")) return checkData(index + 1);
+
   let { options, imageType } = utils.getOptions(imageData.imageUrl);
   if (options.headers.referer) {
     let splitArray = imageData.imageUrl.split("/");
     let lastString = splitArray[splitArray.length - 1];
-    lastString = lastString.split(".jpg")[0];
-    lastString = lastString.split(".png")[0];
+
+    // 推特链接需要把「?」之后的字符串去掉，不然网页访问不了图片
+    lastString = lastString.split(".jpg")[0].split(".png")[0].split("?")[0];
     console.log("正在检查:", lastString);
     lastString = encodeURI(lastString);
-    let imagePath = `./images/${lastString}.${imageType}`;
+    let imagePath = path.resolve(__dirname, `../images/${lastString}.${imageType}`);
     imageData.imageUrl = `/${lastString}.${imageType}`;
     if (fs.existsSync(imagePath)) {
       imagesData.push(imageData);
