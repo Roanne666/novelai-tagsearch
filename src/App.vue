@@ -49,7 +49,7 @@ export default {
     },
   },
   mounted() {
-    this.allKeywordsArray = this.getAllKeywordsArray();
+    this.getAllKeywordsArray();
   },
   methods: {
     getAllKeywordsArray() {
@@ -58,7 +58,8 @@ export default {
         for (let keyword of imageData.keywordsArray) {
           let lowerKeyword = keyword.toLowerCase();
           if (!data.includes(lowerKeyword)) {
-            data.push({ value: lowerKeyword });
+            data.push(lowerKeyword);
+            this.allKeywordsArray.push({ value: lowerKeyword });
           }
         }
       }
