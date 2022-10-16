@@ -15,7 +15,7 @@ npm start
 4. 如果你使用了vp下载图片，请耐心等待图片下载完成，下载完成后终端会有提示（没有使用vpn可以直接进行下一步）
 5. 在浏览器中输入<http://localhost:3000>
 
-## 如何获取pixiv/推特上的图片(本项目包含)
+## 如何获取pixiv/推特上的图片
 1. 打开config.json
 2. 将use_proxy改为true，
 3. 在vpn设置中查看HTTP代理端口，将proxy_port改为相对应的端口
