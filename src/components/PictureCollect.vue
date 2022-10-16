@@ -14,8 +14,12 @@
       ></textarea>
     </div>
     <div>
+      <label for="">种子值(seed)</label>
+      <input type="text" v-model="seed" />
+    </div>
+    <div>
       <label for="">图片链接(首张)</label>
-      <textarea rows="10" cols="50" v-model="imageUrl"></textarea>
+      <textarea rows="5" cols="50" v-model="imageUrl"></textarea>
     </div>
     <div>
       <label for="">图片数(仅限pixiv)</label>
@@ -32,6 +36,7 @@ export default {
       keywords: "",
       negativeKeywords: "",
       imageUrl: "",
+      seed: "",
       count: 1,
     };
   },
@@ -81,10 +86,16 @@ export default {
       this.$axios({
         method: "POST",
         url: "/novelAI/addImages",
-        data: { keywordsArray, negativeKeywordsArray, imageUrlsArray },
+        data: {
+          keywordsArray,
+          negativeKeywordsArray,
+          imageUrlsArray,
+          seed: this.seed,
+        },
       }).then((res) => {
         if (res.data) {
           this.imageUrl = "";
+          this.seed = "";
           this.count = 1;
         } else {
           alert("添加失败");

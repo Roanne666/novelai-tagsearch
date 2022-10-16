@@ -3,10 +3,11 @@ const path = require("path");
 const AIIMAGE_PATH = path.resolve(__dirname, "../data/AIImages.json");
 
 class AIImage {
-  constructor(keywordsArray, negativeKeywordsArray, imageUrl) {
+  constructor(keywordsArray, negativeKeywordsArray, imageUrl, seed) {
     this.keywordsArray = JSON.parse(JSON.stringify(keywordsArray));
     this.negativeKeywordsArray = JSON.parse(JSON.stringify(negativeKeywordsArray));
     this.imageUrl = imageUrl;
+    this.seed = seed;
   }
 
   static images = [];
@@ -73,7 +74,7 @@ module.exports = {
     let newImages = [];
     for (let imageUrl of data.imageUrlsArray) {
       if (!AIImage.imageExist(imageUrl)) {
-        let newImage = new AIImage(data.keywordsArray, data.negativeKeywordsArray, imageUrl);
+        let newImage = new AIImage(data.keywordsArray, data.negativeKeywordsArray, imageUrl, data.seed);
         AIImage.addImage(newImage);
 
         newImages.push(newImage);
