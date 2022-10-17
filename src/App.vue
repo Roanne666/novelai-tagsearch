@@ -88,8 +88,8 @@ export default {
   methods: {
     uploadJson(data) {
       this.isUpload = true;
-      this.images = this.images.concat(data);
-      this.imagesCache = this.imagesCache.concat(data);
+      this.images = data;
+      this.imagesCache = data;
       this.getAllKeywordsArray(this.imagesCache);
     },
     // R18标识

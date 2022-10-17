@@ -6,15 +6,15 @@
       multiple
       :before-upload="beforeUpload"
     >
-      <el-button size="small" type="primary">上传json文件</el-button
-      ><el-button
-        size="small"
-        :disabled="buttonDisabled"
-        @click="$emit('uploadJson', imagesData)"
-        >上传完毕</el-button
-      >
-      <div class="el-upload__tip" slot="tip">只能上传json文件</div>
+      <el-button size="small" type="primary">上传json文件</el-button>
     </el-upload>
+    <el-button
+      id="upload-finish"
+      size="small"
+      :disabled="buttonDisabled"
+      @click="$emit('uploadJson', imagesData)"
+      >上传完毕</el-button
+    >
   </div>
 </template>
 
@@ -44,4 +44,7 @@ export default {
 </script>
 
 <style>
+#upload-finish {
+  margin-top: 5px;
+}
 </style>
