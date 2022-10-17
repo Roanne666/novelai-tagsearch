@@ -1,5 +1,8 @@
 <template>
   <div id="app">
+    <div id="nsfw" class="flex justify-space-between mb-4 flex-wrap gap-4">
+      <el-switch v-model="openNSFW" inactive-text="禁用R18"> </el-switch>
+    </div>
     <div
       id="enter-admin"
       class="flex justify-space-between mb-4 flex-wrap gap-4"
@@ -9,6 +12,11 @@
       }}</el-button>
     </div>
     <PictureCollect v-show="adminButton.isAdmin"></PictureCollect>
+    <uploader-vue
+      id="uploader"
+      @uploadJson="uploadJson"
+      v-if="!isUpload"
+    ></uploader-vue>
     <div v-show="!adminButton.isAdmin">
       <search-input
         @searchImage="searchImage"
@@ -17,7 +25,7 @@
       <div id="images-wrapper" class="demo-image__preview">
         <el-row :gutter="12">
           <el-col :span="8" v-for="image in images" :key="image.imageUrl">
-            <el-card :body-style="{ padding: '0px' }" v-show="!isError(image)">
+            <el-card :body-style="{ padding: '0px' }" v-show="isShow(image)">
               <ImagePreview
                 @loadingError="loadingError"
                 :imagesUrlArray="getImagesUrlArray()"
@@ -26,6 +34,9 @@
               <PopOver
                 :keywords="getKeywordsString(image)"
                 :negative-keywords="getNegativeKeywordsString(image)"
+                :imageUrl="image.imageUrl"
+                :r18="image.r18"
+                @switchR18="switchR18"
               ></PopOver>
             </el-card>
           </el-col>
@@ -36,7 +47,7 @@
 </template>
 
 <script>
-import transImagesData from "./assets/transImages.json";
+import UploaderVue from "./components/Uploader.vue";
 import PictureCollect from "./components/PictureCollect.vue";
 import ImagePreview from "./components/ImagePreview.vue";
 import PopOver from "./components/PopOver.vue";
@@ -44,30 +55,57 @@ import SearchInput from "./components/SearchInput.vue";
 
 export default {
   name: "App",
-  components: { ImagePreview, PopOver, SearchInput, PictureCollect },
+  components: {
+    UploaderVue,
+    ImagePreview,
+    PopOver,
+    SearchInput,
+    PictureCollect,
+  },
   data() {
     return {
       adminButton: {
         isAdmin: false,
         text: "后台",
       },
-      images: transImagesData,
-      imagesCache: transImagesData,
+      images: [],
+      imagesCache: [],
       allKeywordsArray: [],
       errorUrls: [],
+      isUpload: false,
+      openNSFW: true,
     };
   },
   computed: {
-    isError() {
+    isShow() {
       return function (image) {
-        return this.errorUrls.includes(image.imageUrl);
+        if (this.errorUrls.includes(image.imageUrl)) return false;
+        if (image.r18 && this.openNSFW) return false;
+        return true;
       };
     },
   },
-  mounted() {
-    this.getAllKeywordsArray();
-  },
   methods: {
+    uploadJson(data) {
+      this.isUpload = true;
+      this.images = this.images.concat(data);
+      this.imagesCache = this.imagesCache.concat(data);
+      this.getAllKeywordsArray(this.imagesCache);
+    },
+    // R18标识
+    switchR18(imageUrl) {
+      for (let imageData of this.imagesCache) {
+        if (imageData.imageUrl == imageUrl) {
+          this.$axios({
+            method: "POST",
+            url: "/switchR18",
+            data: { imageUrl },
+          }).then((res) => {
+            console.log(res.data);
+          });
+        }
+      }
+    },
     adminButtonClick() {
       this.adminButton.isAdmin = !this.adminButton.isAdmin;
       if (this.adminButton.isAdmin === true) {
@@ -77,9 +115,9 @@ export default {
         this.adminButton.text = "后台";
       }
     },
-    getAllKeywordsArray() {
+    getAllKeywordsArray(imagesData) {
       let data = [];
-      for (let imageData of transImagesData) {
+      for (let imageData of imagesData) {
         for (let keyword of imageData.keywordsArray) {
           let lowerKeyword = keyword.toLowerCase();
           if (!data.includes(lowerKeyword)) {
@@ -136,11 +174,22 @@ export default {
   color: #2c3e50;
 }
 
+#uploader {
+  margin-top: 80px;
+}
+
 #enter-admin {
   position: fixed;
   top: 11px;
   right: 10px;
   z-index: 1000;
+}
+
+#nsfw {
+  position: fixed;
+  top: 20px;
+  right: 100px;
+  z-index: 1001;
 }
 
 #images-wrapper {

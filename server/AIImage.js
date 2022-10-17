@@ -8,6 +8,7 @@ class AIImage {
     this.negativeKeywordsArray = JSON.parse(JSON.stringify(negativeKeywordsArray));
     this.imageUrl = imageUrl;
     this.seed = seed;
+    this.r18 = false;
   }
 
   static images = [];

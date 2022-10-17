@@ -12,7 +12,6 @@ const app = express();
 const port = 3000;
 
 app.use(express.static("dist"));
-app.use(express.static("/public/images"));
 
 app.get("/", (req, res) => {
   res.send("index.html");
@@ -30,6 +29,11 @@ app.post("/novelAI/addImages", jsonParser, (req, res) => {
   let newImages = AIImage.addImages(req.body);
   checkData(newImages);
   res.send(true);
+});
+
+app.post("/switchR18", jsonParser, (req, res) => {
+  let status = AIImage.switchR18(req.body.imageUrl);
+  res.send(status);
 });
 
 app.listen(port);
