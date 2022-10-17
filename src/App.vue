@@ -79,8 +79,8 @@ export default {
   computed: {
     isShow() {
       return function (image) {
-        if (this.errorUrls.includes(image.imageUrl)) return false;
         if (image.r18 && this.openNSFW) return false;
+        if (this.errorUrls.includes(image.imageUrl)) return false;
         return true;
       };
     },
