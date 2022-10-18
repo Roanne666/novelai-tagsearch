@@ -1,22 +1,19 @@
 <template>
   <div id="app">
-    <div id="nsfw" class="flex justify-space-between mb-4 flex-wrap gap-4">
-      <el-switch v-model="openNSFW" inactive-text="禁用R18"> </el-switch>
-    </div>
     <div
       id="enter-admin"
       class="flex justify-space-between mb-4 flex-wrap gap-4"
+      v-show="false"
     >
       <el-button id="admin-button" @click="adminButtonClick">{{
         adminButton.text
       }}</el-button>
     </div>
     <PictureCollect v-show="adminButton.isAdmin"></PictureCollect>
-    <uploader-vue
-      id="uploader"
-      @uploadJson="uploadJson"
-      v-if="!isUpload"
-    ></uploader-vue>
+    <div id="uploader-wrapper" v-show="!isUpload">
+      <el-switch v-model="openNSFW" inactive-text="禁用R18"> </el-switch>
+      <uploader-vue id="uploader" @uploadJson="uploadJson"></uploader-vue>
+    </div>
     <div v-show="!adminButton.isAdmin">
       <search-input
         @searchImage="searchImage"
@@ -166,16 +163,26 @@ export default {
 </script>
 
 <style>
+body {
+  margin: 0;
+  padding: 0;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  width: 100%;
+}
+
+#uploader-wrapper {
+  margin-top: 80px;
 }
 
 #uploader {
-  margin-top: 80px;
+  margin-top: 15px;
 }
 
 #enter-admin {
@@ -185,14 +192,11 @@ export default {
   z-index: 1000;
 }
 
-#nsfw {
-  position: fixed;
-  top: 20px;
-  right: 100px;
-  z-index: 1001;
+#upload-finish {
+  margin-top: 15px;
 }
 
 #images-wrapper {
-  padding-top: 60px;
+  padding-top: 65px;
 }
 </style>
