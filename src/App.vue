@@ -31,6 +31,7 @@
               <PopOver
                 :keywords="getKeywordsString(image)"
                 :negative-keywords="getNegativeKeywordsString(image)"
+                :metadata="getMetadata(image)"
                 :imageUrl="image.imageUrl"
                 :r18="image.r18"
                 @switchR18="switchR18"
@@ -130,6 +131,34 @@ export default {
     },
     getNegativeKeywordsString(image) {
       return image.negativeKeywordsArray.join(",");
+    },
+    getMetadata(image) {
+      return [
+        {
+          name: "sampler",
+          value: image.sampler,
+        },
+        {
+          name: "seed",
+          value: image.seed,
+        },
+        {
+          name: "steps",
+          value: image.steps,
+        },
+        {
+          name: "strength",
+          value: image.strength,
+        },
+        {
+          name: "noise",
+          value: image.noise,
+        },
+        {
+          name: "scale",
+          value: image.scale,
+        },
+      ];
     },
     getImagesUrlArray() {
       let imagesUrlArray = [];
