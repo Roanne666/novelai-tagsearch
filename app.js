@@ -1,39 +1,28 @@
 const express = require("express");
-const bodyParser = require("body-parser");
-const jsonParser = bodyParser.json();
 const path = require("path");
-let imagesJson = require(path.resolve(__dirname, "./data/AIImages.json"));
-const AIImage = require("./server/AIImage");
-let { checkData, imagesData, getAllKeywordsArray } = require("./server/checkData");
-
-checkData(imagesJson);
-
 const app = express();
 const port = 3000;
 
-app.use(express.static("dist"));
+const { getImagesData } = require("./server/getImagesData");
 
-app.get("/", (req, res) => {
-  res.send("index.html");
-});
+function initExpress(electronApp) {
+  const STATIC_PATH = path.resolve(electronApp.getAppPath(), "./dist");
+  let ROOT_PATH = electronApp.getAppPath();
+  if (electronApp.isPackaged) {
+    ROOT_PATH = path.resolve(electronApp.getAppPath(), "../../../../");
+  }
 
-app.get("/imagesData", (req, res) => {
-  res.send(imagesData);
-});
+  app.use(express.static(STATIC_PATH));
 
-app.get("/allKeywords", (req, res) => {
-  res.send(getAllKeywordsArray(imagesJson));
-});
+  app.get("/", (req, res) => {
+    res.send();
+  });
+  getImagesData(ROOT_PATH);
+  app.get("/imagesData", (req, res) => {
+    res.send(getImagesData(ROOT_PATH));
+  });
 
-app.post("/novelAI/addImages", jsonParser, (req, res) => {
-  let newImages = AIImage.addImages(req.body);
-  checkData(newImages);
-  res.send(true);
-});
+  app.listen(port);
+}
 
-app.post("/switchR18", jsonParser, (req, res) => {
-  let status = AIImage.switchR18(req.body.imageUrl);
-  res.send(status);
-});
-
-app.listen(port);
+module.exports = { initExpress };

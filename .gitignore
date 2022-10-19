@@ -4,6 +4,7 @@ node_modules
 *images
 *.jpg
 *.zip
+out
 /public/*.json
 
 # local env files
