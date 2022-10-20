@@ -1,9 +1,9 @@
 const express = require("express");
 const path = require("path");
+const { checkImageDirs } = require("./server/image");
+
 const app = express();
 const port = 3000;
-
-const { checkImageDirs } = require("./server/image");
 
 function initExpress(electronApp) {
   const STATIC_PATH = path.resolve(electronApp.getAppPath(), "./dist");
