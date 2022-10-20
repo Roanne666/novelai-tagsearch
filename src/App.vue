@@ -1,15 +1,5 @@
 <template>
   <div id="app">
-    <div
-      id="enter-admin"
-      class="flex justify-space-between mb-4 flex-wrap gap-4"
-      v-show="false"
-    >
-      <el-button id="admin-button" @click="adminButtonClick">{{
-        adminButton.text
-      }}</el-button>
-    </div>
-    <PictureCollect v-show="adminButton.isAdmin"></PictureCollect>
     <div id="uploader-wrapper" v-show="!isUpload">
       <el-switch v-model="openNSFW" inactive-text="禁用R18"> </el-switch>
       <uploader-vue id="uploader" @uploadJson="uploadJson"></uploader-vue>
@@ -58,10 +48,6 @@ export default {
   },
   data() {
     return {
-      adminButton: {
-        isAdmin: false,
-        text: "后台",
-      },
       images: [],
       imagesCache: [],
       allKeywordsArray: [],
@@ -77,15 +63,6 @@ export default {
       this.images = data;
       this.imagesCache = data;
       this.getAllKeywordsArray(this.imagesCache);
-    },
-    adminButtonClick() {
-      this.adminButton.isAdmin = !this.adminButton.isAdmin;
-      if (this.adminButton.isAdmin === true) {
-        this.adminButton.text = "前台";
-      } else {
-        this.getImageData();
-        this.adminButton.text = "后台";
-      }
     },
     getAllKeywordsArray(imagesData) {
       let data = [];
