@@ -6,6 +6,7 @@ node_modules
 *.zip
 out
 /public/*.json
+out
 
 # local env files
 .env.local

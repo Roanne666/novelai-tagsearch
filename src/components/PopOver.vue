@@ -1,7 +1,7 @@
 <template>
   <div style="padding: 8px">
     <el-popover
-      style="padding: 8px"
+      style="padding: 6px"
       placement="top"
       title=""
       width="200"
@@ -11,7 +11,7 @@
       <el-button slot="reference">关键词</el-button>
     </el-popover>
     <el-popover
-      style="padding: 8px"
+      style="padding: 6px"
       placement="top"
       title=""
       width="200"
@@ -20,7 +20,13 @@
     >
       <el-button slot="reference">过滤词</el-button>
     </el-popover>
-    <el-popover placement="top" title="" width="230" trigger="hover">
+    <el-popover
+      style="padding: 6px"
+      placement="top"
+      title=""
+      width="230"
+      trigger="hover"
+    >
       <el-table :data="metadata">
         <el-table-column
           width="80"
