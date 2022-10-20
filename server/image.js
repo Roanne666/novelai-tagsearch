@@ -1,23 +1,29 @@
 const fs = require("fs");
 const path = require("path");
 
-function getImagesData(ROOT_PATH) {
+function checkImageDirs(ROOT_PATH) {
   const IMAGE_DIR = path.resolve(ROOT_PATH, "./images");
 
   let response = {
     isFirstUse: false,
+    platform: process.platform,
+    imageDirs: [],
   };
   if (!fs.existsSync(IMAGE_DIR)) {
-    fs.mkdirSync(IMAGE_DIR);
     response.isFirstUse = true;
+
+    if (process.platform !== "darwin") {
+      fs.mkdirSync(IMAGE_DIR);
+    }
   } else {
     fs.readdirSync(IMAGE_DIR, { withFileTypes: true }).forEach(function (dirent) {
-      var filePath = path.join(IMAGE_DIR, dirent.name);
+      const FILE_PATH = path.join(IMAGE_DIR, dirent.name);
       if (dirent.isDirectory()) {
-        console.log(filePath);
+        response.imageDirs.push(FILE_PATH);
       }
     });
   }
+  return response;
 }
 
-module.exports = { getImagesData };
+module.exports = { checkImageDirs };

@@ -9,7 +9,6 @@
         adminButton.text
       }}</el-button>
     </div>
-    <PictureCollect v-show="adminButton.isAdmin"></PictureCollect>
     <div id="uploader-wrapper" v-show="!isUpload">
       <el-switch v-model="openNSFW" inactive-text="禁用R18"> </el-switch>
       <uploader-vue id="uploader" @uploadJson="uploadJson"></uploader-vue>
@@ -70,6 +69,49 @@ export default {
       openNSFW: true,
       showingError: false,
     };
+  },
+  mounted() {
+    let userName = "";
+    // this.$axios.get("/getImageDirs").then((res) => {
+    // let { isFirstUse, imageDirs, platform } = res.data;
+
+    let content = {
+      confirmNameContent:
+        "<p>您好，来自platform系统的不知名魔导师，欢迎你打开这本万法之书<br>在正式开始您的魔法之路前，请先输入您的名号</p>",
+      dirCreateContent: "",
+    };
+    // if (isFirstUse) {
+    //   if (platform == "darwin") {
+    //     content.confirmNameContent = content.confirmNameContent.replace(
+    //       "platform",
+    //       "mac"
+    //     );
+    //     content.dirCreateContent =
+    //       "<p>您好，name<br>由于您的魔法系统保护机制过于强大，需要您本人在万法之书的运行目录创建一个名为images文件夹</p>";
+    //   }
+    //   if (platform == "win32") {
+    //     content.confirmNameContent.replace("platform", "windows");
+    //     content.dirCreateContent =
+    //       "<p>您好，name<br>万法之书已经帮您做好初始化工作<br>您只需要把装有AI绘制图片的文件夹放进运行目录中的images文件夹即可</p>";
+    //   }
+    // }
+    content.dirCreateContent =
+      "<p>您好，name<br>由于您的魔法系统保护机制过于强大，需要您本人在万法之书的运行目录创建一个名为images文件夹</p>";
+
+    this.$prompt(content.confirmNameContent, "万法之书的新手引导", {
+      dangerouslyUseHTMLString: true,
+      confirmButtonText: "下一步",
+    }).then(({ value }) => {
+      userName = value;
+      content.dirCreateContent = content.dirCreateContent.replace(
+        "name",
+        value
+      );
+      this.$alert(content.dirCreateContent, "万法之书的新手引导", {
+        dangerouslyUseHTMLString: true,
+      });
+    });
+    // });
   },
   methods: {
     uploadJson(data) {

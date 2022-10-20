@@ -3,23 +3,29 @@ const path = require("path");
 const app = express();
 const port = 3000;
 
-const { getImagesData } = require("./server/getImagesData");
+const { checkImageDirs } = require("./server/image");
 
 function initExpress(electronApp) {
   const STATIC_PATH = path.resolve(electronApp.getAppPath(), "./dist");
   let ROOT_PATH = electronApp.getAppPath();
   if (electronApp.isPackaged) {
-    ROOT_PATH = path.resolve(electronApp.getAppPath(), "../../../../");
+    switch (process.platform) {
+      case "darwin":
+        ROOT_PATH = path.resolve(electronApp.getAppPath(), "../../../../");
+        break;
+      default:
+        break;
+    }
   }
 
   app.use(express.static(STATIC_PATH));
 
   app.get("/", (req, res) => {
-    res.send();
+    res.send("index.html");
   });
-  getImagesData(ROOT_PATH);
-  app.get("/imagesData", (req, res) => {
-    res.send(getImagesData(ROOT_PATH));
+
+  app.get("/getImageDirs", (req, res) => {
+    res.send(checkImageDirs(ROOT_PATH));
   });
 
   app.listen(port);
