@@ -99,7 +99,11 @@ export default {
       "<p>您好，name<br>由于您的魔法系统保护机制过于强大，需要您本人在万法之书的运行目录创建一个名为images文件夹</p>";
 
     this.$prompt(content.confirmNameContent, "万法之书的新手引导", {
+      showCancelButton: false,
+      closeOnPressEscape: false,
+      closeOnClickModal: false,
       dangerouslyUseHTMLString: true,
+      showClose: false,
       confirmButtonText: "下一步",
     }).then(({ value }) => {
       userName = value;
