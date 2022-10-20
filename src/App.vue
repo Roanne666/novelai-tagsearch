@@ -22,7 +22,7 @@
       <div id="images-wrapper" class="demo-image__preview">
         <el-row :gutter="12">
           <el-col :span="8" v-for="image in images" :key="image.imageUrl">
-            <el-card :body-style="{ padding: '0px' }" v-show="isShow(image)">
+            <el-card>
               <ImagePreview
                 @loadingError="loadingError"
                 :imagesUrlArray="getImagesUrlArray()"
@@ -33,8 +33,6 @@
                 :negative-keywords="getNegativeKeywordsString(image)"
                 :metadata="getMetadata(image)"
                 :imageUrl="image.imageUrl"
-                :r18="image.r18"
-                @switchR18="switchR18"
               ></PopOver>
             </el-card>
           </el-col>
@@ -46,7 +44,6 @@
 
 <script>
 import UploaderVue from "./components/Uploader.vue";
-import PictureCollect from "./components/PictureCollect.vue";
 import ImagePreview from "./components/ImagePreview.vue";
 import PopOver from "./components/PopOver.vue";
 import SearchInput from "./components/SearchInput.vue";
@@ -58,7 +55,6 @@ export default {
     ImagePreview,
     PopOver,
     SearchInput,
-    PictureCollect,
   },
   data() {
     return {
@@ -72,16 +68,8 @@ export default {
       errorUrls: [],
       isUpload: false,
       openNSFW: true,
+      showingError: false,
     };
-  },
-  computed: {
-    isShow() {
-      return function (image) {
-        if (image.r18 && this.openNSFW) return false;
-        if (this.errorUrls.includes(image.imageUrl)) return false;
-        return true;
-      };
-    },
   },
   methods: {
     uploadJson(data) {
@@ -89,20 +77,6 @@ export default {
       this.images = data;
       this.imagesCache = data;
       this.getAllKeywordsArray(this.imagesCache);
-    },
-    // R18标识
-    switchR18(imageUrl) {
-      for (let imageData of this.imagesCache) {
-        if (imageData.imageUrl == imageUrl) {
-          this.$axios({
-            method: "POST",
-            url: "/switchR18",
-            data: { imageUrl },
-          }).then((res) => {
-            console.log(res.data);
-          });
-        }
-      }
     },
     adminButtonClick() {
       this.adminButton.isAdmin = !this.adminButton.isAdmin;
@@ -169,6 +143,19 @@ export default {
     },
     loadingError(imageUrl) {
       this.errorUrls.push(imageUrl);
+      if (this.showingError) {
+        return;
+      } else {
+        this.showingError = true;
+        let message = this.$message({
+          showClose: true,
+          message: "图片加载出错，请检查图片位置或json文件是否有误！",
+          type: "error",
+        });
+        message.onClose = () => {
+          this.showingError = false;
+        };
+      }
     },
     searchImage(keywordsArray) {
       if (keywordsArray[0] == "") {
