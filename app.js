@@ -24,7 +24,7 @@ function initExpress(electronApp) {
     res.send("index.html");
   });
 
-  app.get("/getImageDirs", (req, res) => {
+  app.get("/checkImageDirs", (req, res) => {
     res.send(checkImageDirs(ROOT_PATH));
   });
 

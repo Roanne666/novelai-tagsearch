@@ -13,6 +13,7 @@ function checkImageDirs(ROOT_PATH) {
     platform: process.platform,
     imageDirs: [],
   };
+
   if (!fs.existsSync(IMAGE_DIR)) {
     response.isFirstUse = true;
 
@@ -21,9 +22,8 @@ function checkImageDirs(ROOT_PATH) {
     }
   } else {
     fs.readdirSync(IMAGE_DIR, { withFileTypes: true }).forEach(function (dirent) {
-      const FILE_PATH = path.join(IMAGE_DIR, dirent.name);
       if (dirent.isDirectory()) {
-        response.imageDirs.push(FILE_PATH);
+        response.imageDirs.push(dirent.name);
       }
     });
   }
