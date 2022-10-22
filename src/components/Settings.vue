@@ -15,12 +15,22 @@
       <el-switch v-model="settings.openNSFW" inactive-text="是否显示R18内容">
       </el-switch>
     </el-tab-pane>
+    <el-button type="primary" @click="confirmSettings">确认</el-button>
   </el-tabs>
 </template>
 
 <script>
 export default {
   props: ["settings"],
+  methods: {
+    confirmSettings() {
+      this.$axios({
+        method: "post",
+        url: "/getImagesData",
+        data: settings,
+      }).then();
+    },
+  },
 };
 </script>
 

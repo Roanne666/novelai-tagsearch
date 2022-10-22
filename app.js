@@ -1,6 +1,6 @@
 const express = require("express");
 const path = require("path");
-const { checkImageDirs } = require("./server/image");
+const { checkImageDirs, getImagesData } = require("./server/image");
 
 const app = express();
 const port = 3000;
@@ -26,6 +26,10 @@ function initExpress(electronApp) {
 
   app.get("/checkImageDirs", (req, res) => {
     res.send(checkImageDirs(ROOT_PATH));
+  });
+
+  app.post("getImagesData", jsonParser, (req, res) => {
+    res.send(getImagesData(ROOT_PATH, req.body));
   });
 
   app.listen(port);

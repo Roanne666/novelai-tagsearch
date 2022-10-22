@@ -30,12 +30,25 @@ function checkImageDirs(ROOT_PATH) {
   return response;
 }
 
-function getImagesData() {
-  readImageBase64((imageRef) => {
-    let exifRef = readExif(fileRef);
-    let fileInfoRef = readFileInfo(fileRef);
-    console.log(exifRef);
-    console.log(fileInfoRef);
+function getImagesData(ROOT_PATH, dirs) {
+  const IMAGE_DIR = path.resolve(ROOT_PATH, "./images");
+  fs.readdirSync(IMAGE_DIR, { withFileTypes: true }).forEach(function (dirent) {
+    if (dirent.isDirectory()) {
+      for (let dir of dirs) {
+        if (dir == dirent.name) {
+          let DIR_PATH = path.resolve(IMAGE_DIR, `./${dir}`);
+          fs.readdirSync(DIR_PATH, { withFileTypes: true }).forEach(function (file) {
+            console.log(file);
+            /*             readImageBase64((imageRef) => {
+              let exifRef = readExif(fileRef);
+              let fileInfoRef = readFileInfo(fileRef);
+              console.log(exifRef);
+              console.log(fileInfoRef);
+            }); */
+          });
+        }
+      }
+    }
   });
 }
 

@@ -1,7 +1,11 @@
 <template>
   <div id="app">
     <Background @showImageDirs="showImageDirs"></Background>
-    <Settings v-show="loadingDir" :settings="settings"></Settings>
+    <Settings
+      v-show="loadingDir"
+      :settings="settings"
+      @confirm-settings="confirmSettings"
+    ></Settings>
     <div>
       <search-input
         @searchImage="searchImage"
