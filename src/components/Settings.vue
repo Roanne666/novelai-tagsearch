@@ -27,8 +27,8 @@ export default {
       this.$axios({
         method: "post",
         url: "/getImagesData",
-        data: settings,
-      }).then();
+        data: this.settings,
+      }).then((res) => console.log(res.data));
     },
   },
 };

@@ -30,21 +30,27 @@ function checkImageDirs(ROOT_PATH) {
   return response;
 }
 
-function getImagesData(ROOT_PATH, dirs) {
+async function getImagesData(ROOT_PATH, settings) {
   const IMAGE_DIR = path.resolve(ROOT_PATH, "./images");
   fs.readdirSync(IMAGE_DIR, { withFileTypes: true }).forEach(function (dirent) {
     if (dirent.isDirectory()) {
-      for (let dir of dirs) {
-        if (dir == dirent.name) {
-          let DIR_PATH = path.resolve(IMAGE_DIR, `./${dir}`);
-          fs.readdirSync(DIR_PATH, { withFileTypes: true }).forEach(function (file) {
-            console.log(file);
-            /*             readImageBase64((imageRef) => {
-              let exifRef = readExif(fileRef);
-              let fileInfoRef = readFileInfo(fileRef);
-              console.log(exifRef);
+      for (let imageDir of settings.imageDirs) {
+        if (imageDir.selected && imageDir.dirName == dirent.name) {
+          let DIR_PATH = path.resolve(IMAGE_DIR, `./${imageDir.dirName}`);
+          fs.readdirSync(DIR_PATH).forEach(function (file) {
+            if (path.extname(file) == ".png") {
+              let FILE_PATH = path.resolve(DIR_PATH, `./${file}`);
+
+              let fileStat = {
+                name: file.split(".png")[0],
+                size: fs.statSync(FILE_PATH).size,
+              };
+
+              let fileBuffer = fs.readFileSync(FILE_PATH);
+              let exifRef = readExif(fileBuffer);
+              let fileInfoRef = readFileInfo(fileStat, fileBuffer);
               console.log(fileInfoRef);
-            }); */
+            }
           });
         }
       }
@@ -52,9 +58,8 @@ function getImagesData(ROOT_PATH, dirs) {
   });
 }
 
-async function readNovelaiTag(file) {
-  const buf = await file.arrayBuffer();
-  const chunks = extractChunks(new Uint8Array(buf));
+function readNovelaiTag(fileBuffer) {
+  const chunks = extractChunks(new Uint8Array(fileBuffer));
   const textChunks = chunks
     .filter(function (chunk) {
       return chunk.name === "tEXt" || chunk.name === "iTXt";
@@ -70,23 +75,25 @@ async function readNovelaiTag(file) {
       }
       return text.decode(chunk.data);
     });
-  console.log(textChunks);
   return textChunks;
 }
 
-async function readFileInfo(fileRef) {
-  const file = fileRef.value;
-  let nai = await readNovelaiTag(file);
+function readFileInfo(file, fileBuffer) {
+  let nai = readNovelaiTag(fileBuffer);
   if (nai.length == 1) {
-    nai = await handleWebUiTag(nai[0]);
+    nai = handleWebUiTag(nai[0]);
   }
-  let fileInfoRef = {};
-  fileInfoRef.value = [
+  let fileInfoRef = [];
+  let comment = [];
+  fileInfoRef = [
     { key: "文件名", value: file.name },
     { key: "文件大小", value: prettyBytes(file.size) },
     ...nai.map((v, k) => {
       if (v.keyword == "Comment") {
-        jsonData.value = JSON.parse(v.text);
+        comment = JSON.parse(v.text);
+        v.keyword = "uc";
+        v.text = comment.uc;
+        delete comment.uc;
       }
       return {
         key: v.keyword,
@@ -94,8 +101,10 @@ async function readFileInfo(fileRef) {
       };
     }),
   ];
+  fileInfoRef.push({ comment });
+
   if (nai.length == 0) {
-    fileInfoRef.value.push({
+    fileInfoRef.push({
       key: "提示",
       value: "这可能不是一张NovelAI生成的图或者不是原图, 经过了压缩",
     });
@@ -103,7 +112,7 @@ async function readFileInfo(fileRef) {
   return fileInfoRef;
 }
 
-async function handleWebUiTag(data) {
+function handleWebUiTag(data) {
   let promptSplit = data.text.split("Negative prompt: ");
   let otherSplit = promptSplit[1].split("Steps: ");
   return [
@@ -122,31 +131,9 @@ async function handleWebUiTag(data) {
   ];
 }
 
-function readImageBase64(fileRef, callback) {
-  let imageRef = {};
-  imageRef.value = null;
-  const reader = new FileReader();
-  reader.onload = () => {
-    const image = new Image();
-    image.onload = () => {
-      const { width, height } = image;
-      imageRef.value = {
-        width,
-        height,
-        src: reader.result,
-      };
-      imageMaxSizeRef.value = width;
-    };
-    image.src = reader.result;
-    callback(imageRef);
-  };
-  reader.readAsDataURL(fileRef.value);
-}
-
-async function readExif(fileRef) {
+function readExif(fileBuffer) {
   let exifRef = {};
-  const file = fileRef.value;
-  const data = ExifReader.load(file);
+  const data = ExifReader.load(fileBuffer);
   const entries = Object.entries(data);
   exifRef.value = entries.map(([key, value]) => ({ key, value }));
   return exifRef;

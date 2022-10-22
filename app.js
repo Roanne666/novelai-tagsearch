@@ -1,5 +1,7 @@
 const express = require("express");
 const path = require("path");
+const bodyParser = require("body-parser");
+const jsonParser = bodyParser.json();
 const { checkImageDirs, getImagesData } = require("./server/image");
 
 const app = express();
@@ -28,7 +30,7 @@ function initExpress(electronApp) {
     res.send(checkImageDirs(ROOT_PATH));
   });
 
-  app.post("getImagesData", jsonParser, (req, res) => {
+  app.post("/getImagesData", jsonParser, (req, res) => {
     res.send(getImagesData(ROOT_PATH, req.body));
   });
 
