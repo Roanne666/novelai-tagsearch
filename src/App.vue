@@ -2,9 +2,9 @@
   <div id="app">
     <Background @showImageDirs="showImageDirs"></Background>
     <Settings
-      v-show="loadingDir"
+      v-show="loadingDir && imagesCache.length == 0"
       :settings="settings"
-      @confirm-settings="confirmSettings"
+      @getImagesData="getImagesData"
     ></Settings>
     <div>
       <search-input
@@ -64,7 +64,6 @@ export default {
       },
     };
   },
-  mounted() {},
   methods: {
     showImageDirs(imageDirs) {
       for (let imageDir of imageDirs) {
@@ -75,61 +74,59 @@ export default {
       }
       this.loadingDir = true;
     },
-    isShowImage(image) {
-      return !this.settings.openNSFW && image.r18;
+    getImagesData(imagesData) {
+      this.imagesCache = imagesData;
+      this.images = imagesData;
+      this.allKeywordsArray = this.getAllKeywordsArray();
     },
-    uploadJson(data) {
-      this.isUpload = true;
-      this.images = data;
-      this.imagesCache = data;
-      this.getAllKeywordsArray(this.imagesCache);
+    isShowImage() {
+      return true;
     },
-    getAllKeywordsArray(imagesData) {
+    getAllKeywordsArray() {
       let data = [];
-      for (let imageData of imagesData) {
-        for (let keyword of imageData.keywordsArray) {
+      let cache = [];
+      for (let imageData of this.imagesCache) {
+        let keywordString = imageData.description;
+        let keywordsArray = keywordString.split(",").map((v) => {
+          return v
+            .trim()
+            .replace("{", "")
+            .replace("}", "")
+            .replace("(", "")
+            .replace(")", "");
+        });
+        for (let keyword of keywordsArray) {
           let lowerKeyword = keyword.toLowerCase();
-          if (!data.includes(lowerKeyword)) {
-            data.push(lowerKeyword);
-            this.allKeywordsArray.push({ value: lowerKeyword });
+          if (!cache.includes(lowerKeyword)) {
+            cache.push(lowerKeyword);
+            data.push({ value: lowerKeyword });
           }
         }
       }
       return data;
     },
     getKeywordsString(image) {
-      return image.keywordsArray.join(",");
+      return image["description"];
     },
     getNegativeKeywordsString(image) {
-      return image.negativeKeywordsArray.join(",");
+      return image["uc"];
     },
     getMetadata(image) {
-      return [
-        {
-          name: "sampler",
-          value: image.sampler,
-        },
-        {
-          name: "seed",
-          value: image.seed,
-        },
-        {
-          name: "steps",
-          value: image.steps,
-        },
-        {
-          name: "strength",
-          value: image.strength,
-        },
-        {
-          name: "noise",
-          value: image.noise,
-        },
-        {
-          name: "scale",
-          value: image.scale,
-        },
+      let filterKeys = [
+        "fileName",
+        "fileSize",
+        "description",
+        "uc",
+        "dirName",
+        "imageUrl",
       ];
+      let metadata = [];
+      for (let key in image) {
+        if (!filterKeys.includes(key)) {
+          metadata.push({ key, value: image[key] });
+        }
+      }
+      return metadata;
     },
     getImagesUrlArray() {
       let imagesUrlArray = [];

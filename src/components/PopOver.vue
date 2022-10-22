@@ -8,7 +8,7 @@
       trigger="hover"
       :content="keywords"
     >
-      <el-button slot="reference">关键词</el-button>
+      <el-button @click="copyData(keywords)" slot="reference">关键词</el-button>
     </el-popover>
     <el-popover
       style="padding: 6px"
@@ -18,7 +18,9 @@
       trigger="hover"
       :content="negativeKeywords"
     >
-      <el-button slot="reference">过滤词</el-button>
+      <el-button @click="copyData(negativeKeywords)" slot="reference"
+        >过滤词</el-button
+      >
     </el-popover>
     <el-popover
       style="padding: 6px"
@@ -30,7 +32,7 @@
       <el-table :data="metadata">
         <el-table-column
           width="80"
-          property="name"
+          property="key"
           label="类型"
         ></el-table-column>
         <el-table-column
@@ -47,6 +49,23 @@
 <script>
 export default {
   props: ["keywords", "negativeKeywords", "metadata"],
+  methods: {
+    copyData(text) {
+      this.$copyText(text)
+        .then((e) => {
+          this.$message({
+            message: "复制成功",
+            type: "success",
+          });
+        })
+        .catch((e) => {
+          this.$message({
+            message: "复制失败",
+            type: "warning",
+          });
+        });
+    },
+  },
 };
 </script>
 

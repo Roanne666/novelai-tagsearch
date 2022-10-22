@@ -30,8 +30,10 @@ function checkImageDirs(ROOT_PATH) {
   return response;
 }
 
-async function getImagesData(ROOT_PATH, settings) {
+function getImagesData(ROOT_PATH, settings) {
   const IMAGE_DIR = path.resolve(ROOT_PATH, "./images");
+  let imagesData = [];
+
   fs.readdirSync(IMAGE_DIR, { withFileTypes: true }).forEach(function (dirent) {
     if (dirent.isDirectory()) {
       for (let imageDir of settings.imageDirs) {
@@ -47,15 +49,19 @@ async function getImagesData(ROOT_PATH, settings) {
               };
 
               let fileBuffer = fs.readFileSync(FILE_PATH);
-              let exifRef = readExif(fileBuffer);
-              let fileInfoRef = readFileInfo(fileStat, fileBuffer);
-              console.log(fileInfoRef);
+              let exifInfo = readExif(fileBuffer);
+              let fileInfo = readFileInfo(fileStat, fileBuffer);
+              fileInfo.dirName = imageDir.dirName;
+              fileInfo.imageUrl = `./${imageDir.dirName}/${file}`;
+              imagesData.push(fileInfo);
             }
           });
         }
       }
     }
   });
+
+  return imagesData;
 }
 
 function readNovelaiTag(fileBuffer) {
@@ -68,9 +74,15 @@ function readNovelaiTag(fileBuffer) {
       if (chunk.name === "iTXt") {
         let data = chunk.data.filter((x) => x != 0x0);
         let txt = new TextDecoder().decode(data);
+        if (txt.includes("Description")) {
+          return {
+            keyword: "Description",
+            text: txt.split("Description")[1],
+          };
+        }
         return {
-          keyword: "信息",
-          text: txt.slice(11),
+          keyword: "info",
+          text: txt,
         };
       }
       return text.decode(chunk.data);
@@ -86,57 +98,69 @@ function readFileInfo(file, fileBuffer) {
   let fileInfoRef = [];
   let comment = [];
   fileInfoRef = [
-    { key: "文件名", value: file.name },
-    { key: "文件大小", value: prettyBytes(file.size) },
+    { key: "fileName", value: file.name },
+    { key: "fileSize", value: prettyBytes(file.size) },
     ...nai.map((v, k) => {
       if (v.keyword == "Comment") {
         comment = JSON.parse(v.text);
-        v.keyword = "uc";
-        v.text = comment.uc;
-        delete comment.uc;
+        return {};
+      } else {
+        return {
+          key: v.keyword.toLowerCase(),
+          value: v.text,
+        };
       }
-      return {
-        key: v.keyword,
-        value: v.text,
-      };
     }),
   ];
-  fileInfoRef.push({ comment });
+  for (let key in comment) {
+    fileInfoRef.push({ key, value: comment[key] });
+  }
 
   if (nai.length == 0) {
     fileInfoRef.push({
-      key: "提示",
+      key: "tip",
       value: "这可能不是一张NovelAI生成的图或者不是原图, 经过了压缩",
     });
   }
-  return fileInfoRef;
+
+  let fileInfo = {};
+  fileInfoRef.forEach((v) => {
+    if (v.key) {
+      fileInfo[v.key] = v.value;
+    }
+  });
+
+  return fileInfo;
 }
 
 function handleWebUiTag(data) {
-  let promptSplit = data.text.split("Negative prompt: ");
-  let otherSplit = promptSplit[1].split("Steps: ");
-  return [
+  let parameters = data.text.split("Negative prompt: ")[0].split("parameters")[1];
+  let otherSplit = data.text.split("Negative prompt: ")[1].split("Steps: ");
+  let commentsString = `steps:${otherSplit[1]}}`;
+
+  let dataArray = [
     {
-      keyword: "提示词",
-      text: promptSplit[0],
+      keyword: "description",
+      text: parameters,
     },
     {
-      keyword: "负面提示词",
+      keyword: "uc",
       text: otherSplit[0],
     },
-    {
-      keyword: "其他参数",
-      text: "Steps: " + otherSplit[1],
-    },
+    ...commentsString.split(",").map((comment) => {
+      let [keyword, text] = comment.split(":");
+      return { keyword: keyword.trim().toLowerCase(), text: text.trim() };
+    }),
   ];
+  return dataArray;
 }
 
 function readExif(fileBuffer) {
-  let exifRef = {};
+  let exifInfo = [];
   const data = ExifReader.load(fileBuffer);
   const entries = Object.entries(data);
-  exifRef.value = entries.map(([key, value]) => ({ key, value }));
-  return exifRef;
+  exifInfo = entries.map(([key, value]) => ({ key, value: value.description }));
+  return exifInfo;
 }
 
 module.exports = { checkImageDirs, getImagesData };

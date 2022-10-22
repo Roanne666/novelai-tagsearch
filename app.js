@@ -15,12 +15,15 @@ function initExpress(electronApp) {
       case "darwin":
         ROOT_PATH = path.resolve(electronApp.getAppPath(), "../../../../");
         break;
-      default:
+      case "win32":
+        ROOT_PATH = path.resolve(electronApp.getAppPath(), "../../");
         break;
     }
   }
 
   app.use(express.static(STATIC_PATH));
+
+  app.use(express.static(path.resolve(ROOT_PATH, "./images")));
 
   app.get("/", (req, res) => {
     res.send("index.html");

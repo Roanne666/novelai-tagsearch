@@ -8,14 +8,17 @@
         v-for="imageDir in settings.imageDirs"
         v-model="imageDir.selected"
         :label="imageDir.dirName"
+        class="image-dir-checkbox"
         border
       ></el-checkbox>
     </el-tab-pane>
     <el-tab-pane label="配置管理">
-      <el-switch v-model="settings.openNSFW" inactive-text="是否显示R18内容">
-      </el-switch>
+      <!-- <el-switch v-model="settings.openNSFW" inactive-text="是否显示R18内容">
+      </el-switch> -->
     </el-tab-pane>
-    <el-button type="primary" @click="confirmSettings">确认</el-button>
+    <el-button id="confirm-button" type="primary" @click="confirmSettings"
+      >确认</el-button
+    >
   </el-tabs>
 </template>
 
@@ -28,7 +31,9 @@ export default {
         method: "post",
         url: "/getImagesData",
         data: this.settings,
-      }).then((res) => console.log(res.data));
+      }).then((res) => {
+        this.$emit("getImagesData", res.data);
+      });
     },
   },
 };
@@ -42,5 +47,13 @@ export default {
 
 #settings {
   margin-top: 80px;
+}
+
+.image-dir-checkbox {
+  margin: 5px;
+}
+
+#confirm-button {
+  margin: 10px;
 }
 </style>
